@@ -46,6 +46,7 @@ class Report(commands.Cog):
             em = discord.Embed(title='A new report has been sent in.', description=description, color=int("7FD957", 16), timestamp=discord.utils.utcnow())
             em.set_author(name=str(message.author), icon_url=message.author.display_avatar)
             em.set_footer(text=f'Reported by {author}', icon_url=author.display_avatar)
+            em.add_field("User Info" value=f"User Id ``message.author.id`` Username ``message.author``")
             await config.channel.send("<@&1350802603289874497>", embed=em)
             await author.send(embed=em)
 
