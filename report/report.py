@@ -43,11 +43,11 @@ class Report(commands.Cog):
             ellipsis = '...' if len(message.content) > 200 else ''
             description = f'{message.content[:200]}{ellipsis}\n[Read More]({message.jump_url})'
 
-            em = discord.Embed(title='New Report', description=description, color=discord.Colour.red(), timestamp=discord.utils.utcnow())
+            em = discord.Embed(title='A new report has been sent in.', description=description, color=int(27FD957", 16), timestamp=discord.utils.utcnow())
             em.set_author(name=str(message.author), icon_url=message.author.display_avatar)
             em.set_footer(text=f'Reported by {author}', icon_url=author.display_avatar)
             await config.channel.send(embed=em)
-            await author.send(embed=em)
+            await author.send("<@&1350802603289874497>", embed=em)
 
     @checks.has_permissions(PermissionLevel.MODERATOR)
     @commands.command()
