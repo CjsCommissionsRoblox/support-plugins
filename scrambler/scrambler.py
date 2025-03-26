@@ -21,8 +21,20 @@ class scramble(commands.Cog):
         """Scrambles the word provided by the user."""
         if word:
             scrambled_word = self.scramble_word(word)
-            await ctx.send(f"Original word: {word}\nScrambled word: {scrambled_word}")
+
+            # Create the embed
+            embed = discord.Embed(
+                title="Word Scramble",
+                description=f"**Original word:``{word}``\n Scrambled word: ``{scrambled_word}``",
+                color=int("7FD957", 16)  # Color of the embed (you can change this)
+            )
+
+            embed.set_footer(text="Scrambled by " + str(ctx.author))
+
+            # Send the embed to the channel
+            await ctx.send(embed=embed)
         else:
+            # If no word is provided, send a message asking for a word
             await ctx.send("Please provide a word to scramble!")
 
 async def setup(bot):
