@@ -25,7 +25,7 @@ class scramble(commands.Cog):
             # Create the embed
             embed = discord.Embed(
                 title="Word Scramble",
-                description=f"**Original word:``{word}``\n Scrambled word: ``{scrambled_word}``",
+                description=f"Scrambled Word: ```{scrambled_word}```",
                 color=int("7FD957", 16)  # Color of the embed (you can change this)
             )
 
