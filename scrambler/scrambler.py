@@ -3,7 +3,7 @@ import random
 import string
 from discord.ext import commands
 
-class ScrambleCog(commands.Cog):
+class scramble(commands.Cog):
     """Scrambles a given word and returns a randomized version."""
     
     def __init__(self, bot):
@@ -27,4 +27,4 @@ class ScrambleCog(commands.Cog):
 
 async def setup(bot):
     """Sets up the ScrambleCog in the bot."""
-    await bot.add_cog(ScrambleCog(bot))
+    await bot.add_cog(scramble(bot))
