@@ -52,45 +52,49 @@ class Counting(commands.Cog):
         else:
             await ctx.send("You do not have permission to unblock users.")
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        # Ignore messages from bots
-        if message.author.bot:
-            return
+@commands.Cog.listener()
+async def on_message(self, message):
+    # Ignore messages from bots
+    if message.author.bot:
+        return
 
-        # Ignore messages if the content starts with a command prefix
-        if message.content.startswith(self.bot.command_prefix):
-            return
+    # Get the command prefixes dynamically
+    prefixes = await self.bot.get_prefix(message)
 
-        # Check if the message is in the correct counting channel
-        if message.channel.id != self.counting_channel_id:
-            return
+    # Ignore messages that start with a command prefix
+    if any(message.content.startswith(prefix) for prefix in prefixes):
+        return
 
-        # Check if the user is blocked
-        if message.author.id in [blocked.id for blocked in self.blocked_users]:
-            await message.channel.send(f"You are blocked from counting, the number is still ``{self.count}``.")
-            return
+    # Check if the message is in the correct counting channel
+    if message.channel.id != self.counting_channel_id:
+        return
 
-        content = message.content.strip()
+    # Check if the user is blocked
+    if message.author.id in [blocked.id for blocked in self.blocked_users]:
+        await message.channel.send(f"You are blocked from counting, the number is still ``{self.count}``.")
+        return
 
-        # Check if it's a number or a math expression
-        if content.isdigit():
-            number = int(content)
-        else:
-            number = self.evaluate_math(content)
+    content = message.content.strip()
 
-        # Validate the count
-        if number == self.count:
-            self.count += 1
-            self.last_user = message.author
-            await message.add_reaction("✅")  # React with a tick
-        else:
-            await message.channel.send(f"``{message.author.mention}`` broke the chain... restarting at ``1``!")
-            self.count = 1  # Reset counter
-            await message.channel.send("The next number is ``1``.")
+    # Check if it's a number or a math expression
+    if content.isdigit():
+        number = int(content)
+    else:
+        number = self.evaluate_math(content)
 
-        # Allow the bot to process commands
-        await self.bot.process_commands(message)
+    # Validate the count
+    if number == self.count:
+        self.count += 1
+        self.last_user = message.author
+        await message.add_reaction("✅")  # React with a tick
+    else:
+        await message.channel.send(f"``{message.author.mention}`` broke the chain... restarting at ``1``!")
+        self.count = 1  # Reset counter
+        await message.channel.send("The next number is ``1``.")
+
+    # Allow the bot to process commands
+    await self.bot.process_commands(message)
+
 
 async def setup(bot):
     await bot.add_cog(Counting(bot))
