@@ -89,6 +89,8 @@ class Counting(commands.Cog):
             self.count = 1  # Reset counter
             await message.channel.send("The next number is ``1``.")
 
+        # Allow the bot to process commands
+        await self.bot.process_commands(message)
 
 async def setup(bot):
     await bot.add_cog(Counting(bot))
