@@ -21,7 +21,7 @@ async def counting(self, ctx, action: str, number: int):
     """Command to change the expected number."""
     if action.lower() == "number":
         if ctx.author.guild_permissions.administrator:  # Only admins can use this
-            self.count = number + 1  # Go one past the set number
+            self.count = {number} + 1  # Go one past the set number
             await ctx.send(f"The number has been set to ``{number}``.")
         else:
             await ctx.send("You do not have permission to use this command.")
