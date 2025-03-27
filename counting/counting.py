@@ -22,7 +22,7 @@ async def counting(self, ctx, action: str, number: int):
     if action.lower() == "number":
         if ctx.author.guild_permissions.administrator:  # Only admins can use this
             self.count = {number} + 1  # Go one past the set number
-            await ctx.send(f"The number has been set to ``{number}``.")
+            await ctx.send(f"The number has been set to ``{self.count}``.")
         else:
             await ctx.send("You do not have permission to use this command.")
     else:
