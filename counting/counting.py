@@ -29,7 +29,7 @@ class Counting(commands.Cog):
             await ctx.send("Invalid action. Use `-counting number [NUM]`.")
 
     @commands.command()
-    async def block(self, ctx, user: discord.User):
+    async def counting_block(self, ctx, user: discord.User):
         """Block a user from counting."""
         if ctx.author.guild_permissions.administrator:
             if user.id not in [blocked.id for blocked in self.blocked_users]:
@@ -41,7 +41,7 @@ class Counting(commands.Cog):
             await ctx.send("You do not have permission to block users.")
 
     @commands.command()
-    async def unblock(self, ctx, user: discord.User):
+    async def counting_unblock(self, ctx, user: discord.User):
         """Unblock a user from counting."""
         if ctx.author.guild_permissions.administrator:
             if user.id in [blocked.id for blocked in self.blocked_users]:
