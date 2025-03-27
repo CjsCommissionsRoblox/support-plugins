@@ -32,9 +32,11 @@ class Counting(commands.Cog):
         if number == self.count:
             self.count += 1
             self.last_user = message.author
+            await message.add_reaction("✅")  # React with a tick
         else:
-            await message.channel.send(f"**{message.author.mention} broke the chain... restarting at 1!**")
+            await message.channel.send(f"``{message.author.mention}`` broke the chain... restarting at `1``!")
             self.count = 1  # Reset counter
+            await message.channel.send("The next number is ``1``.")
 
 async def setup(bot):
     await bot.add_cog(Counting(bot))
