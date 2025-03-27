@@ -34,9 +34,9 @@ class Counting(commands.Cog):
         if ctx.author.guild_permissions.administrator:
             if user.id not in [blocked.id for blocked in self.blocked_users]:
                 self.blocked_users.append(user)
-                await ctx.send(f"``{user.mention}`` has been blocked from counting.")
+                await ctx.send(f"{user.mention} has been blocked from counting.")
             else:
-                await ctx.send(f"``{user.mention}`` is already blocked from counting.")
+                await ctx.send(f"{user.mention} is already blocked from counting.")
         else:
             await ctx.send("You do not have permission to block users.")
 
@@ -46,7 +46,7 @@ class Counting(commands.Cog):
         if ctx.author.guild_permissions.administrator:
             if user.id in [blocked.id for blocked in self.blocked_users]:
                 self.blocked_users = [blocked for blocked in self.blocked_users if blocked.id != user.id]
-                await ctx.send(f"``{user.mention}`` has been unblocked and can now count again.")
+                await ctx.send(f"{user.mention} has been unblocked and can now count again.")
             else:
                 await ctx.send(f"``{user.mention}`` is not blocked.")
         else:
@@ -75,7 +75,7 @@ class Counting(commands.Cog):
             self.last_user = message.author
             await message.add_reaction("✅")  # React with a tick
         else:
-            await message.channel.send(f"``{message.author.mention}`` broke the chain... restarting at ``1``!")
+            await message.channel.send(f"{message.author.mention} broke the chain... restarting at ``1``!")
             self.count = 1  # Reset counter
             await message.channel.send("The next number is ``1``.")
 
