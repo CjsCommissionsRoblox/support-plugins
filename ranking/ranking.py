@@ -9,17 +9,27 @@ class RankingBot(commands.Cog):
         self.headers = {
             "Cookie": f".ROBLOSECURITY={self.roblosecurity}",
             "Content-Type": "application/json"
-        }
-
+        }    def refresh_csrf(self):
+        """Refreshes the X-CSRF-TOKEN by triggering a dummy POST request."""
+        response = self.session.post("https://auth.roblox.com/v2/logout")
+        token = response.headers.get("x-csrf-token")
+        if token:
+            self.session.headers["X-CSRF-TOKEN"] = token
+            return True
+        return False
 
     @commands.command(name="ranking-join")
     @commands.has_permissions(administrator=True)
     async def ranking_join(self, ctx, group_id: int):
         """Joins a Roblox group (Admins only)."""
-        url = f"https://groups.roblox.com/v1/groups/{group_id}/users"
-        payload = { "groupId": group_id }
+        if not self.refresh_csrf():
+            await ctx.send("Could not refresh CSRF token.")
+            return
 
-        response = requests.post(url, headers=self.headers, json=payload)
+        url = f"https://groups.roblox.com/v1/groups/{group_id}/users"
+        payload = {"groupId": group_id}
+
+        response = self.session.post(url, json=payload)
 
         if response.status_code == 200:
             await ctx.send(f"Successfully joined group `{group_id}`!")
@@ -34,9 +44,14 @@ class RankingBot(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def ranking_leave(self, ctx, group_id: int):
         """Leaves a Roblox group (Admins only)."""
-        url = f"https://groups.roblox.com/v1/groups/{group_id}/users/leave"
+        if not self.refresh_csrf():
+            await ctx.send("Could not refresh CSRF token.")
+            return
 
-        response = requests.post(url, headers=self.headers)
+        url = "https://groups.roblox.com/v1/user/groups/leave"
+        payload = {"groupId": group_id}
+
+        response = self.session.post(url, json=payload)
 
         if response.status_code == 200:
             await ctx.send(f"Successfully left group `{group_id}`.")
