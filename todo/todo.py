@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-class TodoCog(commands.Cog):
+class TodoList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.todo_list = []
