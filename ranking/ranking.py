@@ -11,23 +11,27 @@ class RankingBot(commands.Cog):
             "Content-Type": "application/json"
         }
 
-    @commands.command(name="ranking-join")
-    async def ranking_join(self, ctx, group_id: int):
-        """Joins a Roblox group using a group ID."""
-        # Get X-CSRF-TOKEN
-        csrf_req = requests.post("https://auth.roblox.com/v2/logout", headers=self.headers)
-        csrf_token = csrf_req.headers.get("x-csrf-token")
+    def get_csrf_token(self):
+        """Fetch a new CSRF token from Roblox."""
+        response = requests.post("https://auth.roblox.com/v2/logout", headers=self.headers)
+        token = response.headers.get("x-csrf-token")
+        if token:
+            self.headers["X-CSRF-TOKEN"] = token
+            return True
+        return False
 
-        if not csrf_token:
+    @commands.command(name="ranking-join")
+    @commands.has_permissions(administrator=True)
+    async def ranking_join(self, ctx, group_id: int):
+        """Joins a Roblox group using group ID (Admins only)."""
+        if not self.get_csrf_token():
             await ctx.send("Failed to get CSRF token.")
             return
 
-        self.headers["X-CSRF-TOKEN"] = csrf_token
-
-        join_url = f"https://groups.roblox.com/v1/groups/{group_id}/users"
+        url = f"https://groups.roblox.com/v1/groups/{group_id}/users"
         payload = { "groupId": group_id }
 
-        response = requests.post(join_url, headers=self.headers, json=payload)
+        response = requests.post(url, headers=self.headers, json=payload)
 
         if response.status_code == 200:
             await ctx.send(f"Successfully joined group `{group_id}`!")
@@ -37,6 +41,33 @@ class RankingBot(commands.Cog):
                 f"Status: {response.status_code}\n"
                 f"Response: {response.text}"
             )
+
+    @commands.command(name="ranking-leave")
+    @commands.has_permissions(administrator=True)
+    async def ranking_leave(self, ctx, group_id: int):
+        """Leaves a Roblox group using group ID (Admins only)."""
+        if not self.get_csrf_token():
+            await ctx.send("Failed to get CSRF token.")
+            return
+
+        url = f"https://groups.roblox.com/v1/groups/{group_id}/users/leave"
+
+        response = requests.post(url, headers=self.headers)
+
+        if response.status_code == 200:
+            await ctx.send(f"Successfully left group `{group_id}`.")
+        else:
+            await ctx.send(
+                f"Failed to leave group `{group_id}`.\n"
+                f"Status: {response.status_code}\n"
+                f"Response: {response.text}"
+            )
+
+    @ranking_join.error
+    @ranking_leave.error
+    async def permission_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You must be an **admin** to use this command.")
 
 async def setup(bot):
     await bot.add_cog(RankingBot(bot))
