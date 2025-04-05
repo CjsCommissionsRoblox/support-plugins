@@ -34,4 +34,4 @@ class TodoList(commands.Cog):
         await ctx.send("Your to-do list has been cleared.")
 
 def setup(bot):
-    bot.add_cog(TodoList(bot))
+    bot.add_cog(TodoList(bot))  # No await here, just a simple registration
