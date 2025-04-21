@@ -59,7 +59,7 @@ class Counting(commands.Cog):
             return
         # Restrict to allowed roles if set
         allowed_roles = self.global_config.get("allowed_roles", [])
-        if allowed_roles:
+        if allowed_roles and len(allowed_roles) != 0:
             if not any(role.id in allowed_roles for role in getattr(message.author, "roles", [])):
                 return
         # Check if the message is a number
